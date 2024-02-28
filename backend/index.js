@@ -1,6 +1,6 @@
 const express = require('express');
 const {generateFile} = require('./generateFile');
-// const {executeCpp} = require('./executeCpp'); 
+const {executeCpp} = require('./executeCpp'); 
 const app = express();
 
 app.use(express.urlencoded({extended:true}));
@@ -17,17 +17,24 @@ app.post("/run",async(req,res)=>{
     if(code === undefined){
         return res.status(404).json({success:false,error:"empty code body!"})
     }
+    try{
+        
+        const filePath = await generateFile(language,code);
+        const output = await executeCpp(filePath);
+        
+        res.json({filePath,output});
+    }catch(error){
+        return res.status(500).json({success:false,error: error.message});
+    }
 
-    const filePath = await generateFile(language,code);
-    console.log(filePath);
-    res.json({filePath});
-// ---------------------------------------------------------------------
+    // ---------------------------------------------------------------------
     
+    // console.log(filePath);
     // const output = await executeCpp(filePath);
     
     // const code = req.body.code;
     // res.json(req.body);
-})
+});
 
 app.listen(5000,function(){
     console.log("server listening on 5000")
