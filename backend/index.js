@@ -2,12 +2,15 @@ const express = require('express');
 const {generateFile} = require('./generateFile');
 const {executeCpp} = require('./executeCpp'); 
 const app = express();
+const cors = require('cors');
 
+//middlewares
+app.use(cors());
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 
 app.get('/',function(req,res){
-    res.send("welcome to CODE AVITA the online Judge");
+    res.send("elcome to CODE AVITA the online Judge");
 });
 
 app.post("/run",async(req,res)=>{
